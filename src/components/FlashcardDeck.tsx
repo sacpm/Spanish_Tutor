@@ -33,9 +33,9 @@ export default function FlashcardDeck({ cardSet, onBack }: Props) {
     (e: React.MouseEvent) => {
       e.stopPropagation();
       if (flipped) {
-        speak(card.english, 'en');
-      } else {
         speak(card.spanish, 'es');
+      } else {
+        speak(card.english, 'en');
       }
     },
     [flipped, card, speak]
@@ -59,14 +59,14 @@ export default function FlashcardDeck({ cardSet, onBack }: Props) {
         <div className={`card ${flipped ? 'is-flipped' : ''}`}>
           <div className="card-face card-front">
             <div className="card-emoji">{card.emoji}</div>
-            <div className="card-word spanish-word">{card.spanish}</div>
-            <div className="card-lang-label">Spanish</div>
+            <div className="card-word english-word">{card.english}</div>
+            <div className="card-lang-label">English — how do you say this in Spanish?</div>
             <div className="flip-hint">tap to flip</div>
           </div>
           <div className="card-face card-back">
             <div className="card-emoji">{card.emoji}</div>
-            <div className="card-word english-word">{card.english}</div>
-            <div className="card-lang-label">English</div>
+            <div className="card-word spanish-word">{card.spanish}</div>
+            <div className="card-lang-label">Spanish</div>
             <div className="flip-hint">tap to flip</div>
           </div>
         </div>

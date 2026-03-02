@@ -1,23 +1,369 @@
+---
+---
 <!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
-	</head>
-	<body>
-		<slot />
-	</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/Spanish_Tutor/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>Spanish Tutor for Gavi 🌟</title>
+  </head>
+  <body>
+    <slot />
+  </body>
 </html>
 
-<style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
+<style is:global>
+  *, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html, body {
+    height: 100%;
+    font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    color: #1a1a2e;
+  }
+
+  #app {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 1.5rem 1rem 2rem;
+  }
+
+  /* ── Home screen ── */
+  .home-container {
+    width: 100%;
+    max-width: 480px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .welcome-section {
+    text-align: center;
+    color: white;
+  }
+
+  .star-row {
+    font-size: 1.6rem;
+    letter-spacing: 0.4rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .welcome-title {
+    font-size: clamp(2.2rem, 8vw, 3.2rem);
+    font-weight: 800;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.25);
+    line-height: 1.1;
+  }
+
+  .name-highlight {
+    color: #FFD700;
+    text-shadow: 0 2px 12px rgba(0,0,0,0.35);
+  }
+
+  .welcome-subtitle {
+    font-size: 1.3rem;
+    margin-top: 0.4rem;
+    opacity: 0.95;
+  }
+
+  .welcome-prompt {
+    font-size: 1rem;
+    margin-top: 0.6rem;
+    opacity: 0.85;
+  }
+
+  .set-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+  }
+
+  .set-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.1rem 1.4rem;
+    border-radius: 18px;
+    border: none;
+    background: white;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    text-align: left;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .set-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 6px;
+    background: var(--set-color);
+    border-radius: 18px 0 0 18px;
+  }
+
+  .set-card:hover, .set-card:focus-visible {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 8px 28px rgba(0,0,0,0.2);
+    outline: none;
+  }
+
+  .set-card:active {
+    transform: translateY(0) scale(0.98);
+  }
+
+  .set-emoji {
+    font-size: 2.2rem;
+    flex-shrink: 0;
+    margin-left: 0.4rem;
+  }
+
+  .set-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    flex: 1;
+  }
+
+  .set-count {
+    font-size: 0.85rem;
+    color: #888;
+    background: #f0f0f0;
+    padding: 0.2rem 0.6rem;
+    border-radius: 20px;
+    flex-shrink: 0;
+  }
+
+  /* ── Deck / flashcard screen ── */
+  .deck-container {
+    width: 100%;
+    max-width: 480px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.2rem;
+  }
+
+  .deck-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    color: white;
+  }
+
+  .deck-header h2 {
+    font-size: 1.3rem;
+    font-weight: 700;
+  }
+
+  .back-btn {
+    background: rgba(255,255,255,0.2);
+    border: 2px solid rgba(255,255,255,0.5);
+    color: white;
+    padding: 0.4rem 0.9rem;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: background 0.15s;
+  }
+
+  .back-btn:hover {
+    background: rgba(255,255,255,0.35);
+  }
+
+  .counter {
+    font-size: 0.9rem;
+    opacity: 0.85;
+    background: rgba(255,255,255,0.2);
+    padding: 0.3rem 0.7rem;
+    border-radius: 20px;
+  }
+
+  /* ── 3D flip card ── */
+  .card-scene {
+    width: 100%;
+    max-width: 380px;
+    height: 240px;
+    perspective: 900px;
+    cursor: pointer;
+  }
+
+  .card {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .card.is-flipped {
+    transform: rotateY(180deg);
+  }
+
+  .card-face {
+    position: absolute;
+    inset: 0;
+    border-radius: 24px;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    padding: 1.5rem;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+    user-select: none;
+  }
+
+  .card-front {
+    background: linear-gradient(135deg, #ffffff, #f8f0ff);
+    border: 3px solid rgba(118, 75, 162, 0.15);
+  }
+
+  .card-back {
+    background: linear-gradient(135deg, #e8f8f5, #ffffff);
+    border: 3px solid rgba(78, 205, 196, 0.25);
+    transform: rotateY(180deg);
+  }
+
+  .card-emoji {
+    font-size: 3.2rem;
+    line-height: 1;
+  }
+
+  .card-word {
+    font-size: clamp(1.8rem, 7vw, 2.6rem);
+    font-weight: 800;
+    text-align: center;
+    line-height: 1.1;
+  }
+
+  .spanish-word {
+    color: #764ba2;
+  }
+
+  .english-word {
+    color: #2a9d8f;
+  }
+
+  .card-lang-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.5;
+  }
+
+  .flip-hint {
+    font-size: 0.75rem;
+    opacity: 0.4;
+    position: absolute;
+    bottom: 0.8rem;
+    right: 1rem;
+  }
+
+  /* ── Speak button ── */
+  .card-controls {
+    display: flex;
+    justify-content: center;
+  }
+
+  .speak-btn {
+    background: white;
+    border: 3px solid #764ba2;
+    color: #764ba2;
+    padding: 0.6rem 1.6rem;
+    border-radius: 30px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .speak-btn:hover:not(:disabled) {
+    background: #764ba2;
+    color: white;
+    transform: scale(1.05);
+  }
+
+  .speak-btn:disabled {
+    opacity: 0.6;
+    cursor: default;
+  }
+
+  /* ── Navigation ── */
+  .nav-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 380px;
+  }
+
+  .nav-btn {
+    background: rgba(255,255,255,0.2);
+    border: 2px solid rgba(255,255,255,0.5);
+    color: white;
+    padding: 0.55rem 1.1rem;
+    border-radius: 20px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+  }
+
+  .nav-btn:hover {
+    background: rgba(255,255,255,0.35);
+    transform: scale(1.05);
+  }
+
+  .nav-btn:active {
+    transform: scale(0.96);
+  }
+
+  .dot-progress {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 180px;
+  }
+
+  .dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.35);
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+    flex-shrink: 0;
+  }
+
+  .dot.active {
+    background: #FFD700;
+    transform: scale(1.3);
+  }
+
+  .dot:hover {
+    background: rgba(255,255,255,0.7);
+  }
 </style>
